@@ -3,59 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <title>Личный кабинет</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    body { 
-      font-family: Arial; 
-      background: #f5f5f5; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-    }
-    .container { 
-      background: white; 
-      padding: 40px; 
-      border-radius: 10px; 
-      width: 400px; 
-      text-align: center; 
-    }
-    button { 
-      padding: 10px 20px; 
-      background: black; 
-      color: white; 
-      border: none; 
-      cursor: pointer; 
-      margin-top: 20px; 
-      border-radius: 5px;
-    }
-    .home-btn {
-      background: #555;
-      margin-top: 10px;
-    }
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin:auto; }
+    input, textarea, select { width: 100%; padding: 8px; margin: 5px 0; }
+    button { padding: 10px; margin-top: 10px; }
   </style>
 </head>
 <body>
-<div class="container">
-  <h2>Добро пожаловать, <span id="user-email"></span>!</h2>
-  <p>Это ваш личный кабинет.</p>
+<h1>Личный кабинет</h1>
 
-  <button onclick="logout()">Выйти</button>
-  <button class="home-btn" onclick="goHome()">Вернуться на главную страницу</button>
-</div>
+<p>Имя: <span id="user-name"></span></p>
+<p>Email: <span id="user-email"></span></p>
+
+<h2>Отправить на модерацию</h2>
+<textarea id="post-text" placeholder="Текст поста"></textarea>
+<input type="file" id="post-img" accept="image/*">
+<select id="post-section">
+  <option>Концерты</option>
+  <option>Воркшопы</option>
+  <option>Встречи</option>
+</select>
+<button onclick="submitPost()">Отправить на модерацию</button>
+
+<p id="message"></p>
 
 <script>
   const user = localStorage.getItem('currentUser');
-  if(!user) window.location.href = 'login.html';
+  if(!user) window.location.href='login.html';
 
+  document.getElementById('user-name').textContent = user;
   document.getElementById('user-email').textContent = user;
 
-  function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'login.html';
-  }
+  function submitPost() {
+    const text = document.getElementById('post-text').value;
+    const section = document.getElementById('post-section').value;
+    const file = document.getElementById('post-img').files[0];
+    
+    if(!text) { alert("Введите текст"); return; }
 
-  function goHome() {
-    window.location.href = 'index.html';
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const posts = JSON.parse(localStorage.getItem('moderationPosts') || '[]');
+      posts.push({user, text, section, img:e.target.result, status:'pending'});
+      localStorage.setItem('moderationPosts', JSON.stringify(posts));
+      document.getElementById('message').textContent = "Отправлено на модерацию!";
+      document.getElementById('post-text').value = '';
+      document.getElementById('post-img').value = '';
+    };
+    if(file) reader.readAsDataURL(file);
+    else {
+      const posts = JSON.parse(localStorage.getItem('moderationPosts') || '[]');
+      posts.push({user, text, section, img:null, status:'pending'});
+      localStorage.setItem('moderationPosts', JSON.stringify(posts));
+      document.getElementById('message').textContent = "Отправлено на модерацию!";
+      document.getElementById('post-text').value = '';
+    }
   }
 </script>
 </body>
