@@ -56,6 +56,16 @@
       text-decoration: none;
       border-radius: 5px;
       margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .logout-btn {
+      background: #555;
+      margin-left: 10px;
+    }
+
+    .user-buttons {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -65,18 +75,18 @@
 <header>
   <div class="lang-switch">
     <button onclick="toggleLanguage()" id="lang-btn">EN</button>
-    <a class="button" href="login.html">Личный кабинет</a>
   </div>
 
   <h1 id="name">Татьяна</h1>
   <p id="role">Бизнес-аналитик</p>
+
+  <!-- Динамические кнопки -->
+  <div class="user-buttons" id="user-btn-container"></div>
 </header>
 
 <section>
   <h2 id="about-title">Обо мне</h2>
-  <p id="about-text">
-    
-  </p>
+  <p id="about-text"></p>
 </section>
 
 <section>
@@ -92,7 +102,6 @@
 <section>
   <h2 id="contacts-title">Контакты</h2>
   <p>Email: your@email.com</p>
-  <a class="button" id="contact-btn" href="#">Написать мне</a>
 </section>
 
 <script>
@@ -103,38 +112,26 @@
 
     if (currentLang === "ru") {
       document.documentElement.lang = "en";
-
       document.getElementById("name").textContent = "Tatiana";
       document.getElementById("role").textContent = "Business Analyst";
-
       document.getElementById("about-title").textContent = "About Me";
-      document.getElementById("about-text").textContent =
-        "";
-
+      document.getElementById("about-text").textContent = "";
       document.getElementById("skills-title").textContent = "Skills";
       document.getElementById("skills-list").innerHTML = `
         <li>1</li>
-        <li>2/li>
+        <li>2</li>
         <li>3</li>
         <li>4</li>
       `;
-
       document.getElementById("contacts-title").textContent = "Contacts";
-      document.getElementById("contact-btn").textContent = "Contact me";
-
       btn.textContent = "RU";
       currentLang = "en";
-
     } else {
       document.documentElement.lang = "ru";
-
       document.getElementById("name").textContent = "Татьяна";
       document.getElementById("role").textContent = "Бизнес-аналитик";
-
       document.getElementById("about-title").textContent = "Обо мне";
-      document.getElementById("about-text").textContent =
-        "";
-
+      document.getElementById("about-text").textContent = "";
       document.getElementById("skills-title").textContent = "Навыки";
       document.getElementById("skills-list").innerHTML = `
         <li>1</li>
@@ -142,14 +139,34 @@
         <li>3</li>
         <li>4</li>
       `;
-
       document.getElementById("contacts-title").textContent = "Контакты";
-      document.getElementById("contact-btn").textContent = "Написать мне";
-
       btn.textContent = "EN";
       currentLang = "ru";
     }
   }
+
+  // --- Динамические кнопки Личный кабинет / Войти / Выйти ---
+  function updateUserButtons() {
+    const container = document.getElementById('user-btn-container');
+    const user = localStorage.getItem('currentUser');
+
+    if(user) {
+      container.innerHTML = `
+        <a class="button" href="dashboard.html">Личный кабинет (${user})</a>
+        <button class="button logout-btn" onclick="logout()">Выйти</button>
+      `;
+    } else {
+      container.innerHTML = `<a class="button" href="login.html">Войти / Зарегистрироваться</a>`;
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    updateUserButtons();
+  }
+
+  // Обновляем кнопки при загрузке страницы
+  updateUserButtons();
 </script>
 
 </body>
