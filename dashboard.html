@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Личный кабинет</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .container { background: white; padding: 40px; border-radius: 10px; width: 400px; text-align: center; }
+    button { padding: 10px 20px; background: black; color: white; border: none; cursor: pointer; margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Добро пожаловать, <span id="user-email"></span>!</h2>
+  <p>Это ваш личный кабинет.</p>
+  <button onclick="logout()">Выйти</button>
+</div>
+
+<script>
+  const user = localStorage.getItem('currentUser');
+  if(!user) window.location.href = 'login.html';
+
+  document.getElementById('user-email').textContent = user;
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>
