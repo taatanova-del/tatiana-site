@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Модерация</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 800px; margin:auto; }
+    .post { border:1px solid #ccc; padding:10px; margin-bottom:10px; border-radius:6px; }
+    button { margin-right:10px; }
+  </style>
+</head>
+<body>
+<h1>Модерация постов</h1>
+<div id="posts-container"></div>
+
+<script>
+  function loadPosts() {
+    const container = document.getElementById('posts-container');
+    const posts = JSON.parse(localStorage.getItem('moderationPosts') || '[]');
+    container.innerHTML = '';
+    posts.forEach((p,i) => {
+      if(p.status !== 'pending') return;
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `
+        <p><strong>${p.user}</strong> (${p.section})</p>
+        <p>${p.text}</p>
+        ${p.img ? '<img src="'+p.img+'" style="max-width:200px;">' : ''}
+        <br>
+        <button onclick="accept(${i})">Принять</button>
+        <button onclick="reject(${i})">Отклонить</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function accept(index) {
+    const posts = JSON.parse(localStorage.getItem('moderationPosts') || '[]');
+    const approvedEvents = JSON.parse(localStorage.getItem('approvedEvents') || '[]');
+    approvedEvents.push(posts[index]);
+    localStorage.setItem('approvedEvents', JSON.stringify(approvedEvents));
+    posts[index].status='approved';
+    localStorage.setItem('moderationPosts', JSON.stringify(posts));
+    loadPosts();
+  }
+
+  function reject(index) {
+    const posts = JSON.parse(localStorage.getItem('moderationPosts') || '[]');
+    posts[index].status='rejected';
+    localStorage.setItem('moderationPosts', JSON.stringify(posts));
+
+    // уведомление пользователю
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '{}');
+    const user = posts[index].user;
+    if(!notifications[user]) notifications[user] = [];
+    notifications[user].push("Ваш пост отклонен модератором.");
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
+    loadPosts();
+  }
+
+  loadPosts();
+</script>
+</body>
+</html>
