@@ -4,11 +4,44 @@
   <meta charset="UTF-8">
   <title>Вход / Регистрация</title>
   <style>
-    body { font-family: Arial; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .container { background: white; padding: 40px; border-radius: 10px; width: 300px; }
-    input { width: 100%; padding: 10px; margin: 10px 0; }
-    button { width: 100%; padding: 10px; background: black; color: white; border: none; cursor: pointer; }
-    .message { color: red; font-size: 14px; }
+    body {
+      font-family: Arial; 
+      background: #f5f5f5; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh;
+    }
+    .container { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 10px; 
+      width: 300px; 
+      text-align: center;
+    }
+    input { 
+      width: 100%; 
+      padding: 10px; 
+      margin: 10px 0; 
+    }
+    button { 
+      width: 100%; 
+      padding: 10px; 
+      background: black; 
+      color: white; 
+      border: none; 
+      cursor: pointer; 
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    .message { 
+      color: red; 
+      font-size: 14px; 
+      margin-top: 10px;
+    }
+    .home-btn {
+      background: #555;
+    }
   </style>
 </head>
 <body>
@@ -20,6 +53,7 @@
 
   <button onclick="register()">Зарегистрироваться</button>
   <button onclick="login()">Войти</button>
+  <button class="home-btn" onclick="goHome()">Вернуться на главную страницу</button>
 
   <p class="message" id="msg"></p>
 </div>
@@ -51,6 +85,10 @@
     } else {
       document.getElementById('msg').textContent = "Неверный email или пароль";
     }
+  }
+
+  function goHome() {
+    window.location.href = 'index.html';
   }
 </script>
 </body>
